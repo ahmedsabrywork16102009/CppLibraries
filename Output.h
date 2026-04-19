@@ -39,7 +39,7 @@ namespace output {
         bool isFirst = true;
 
         for (int i = from; i <= to; i++) {
-            if (process::isPrimeNumber(i)) {
+            if (process::isPrime(i)) {
                 if (!isFirst) {
                     std::cout << ", ";
                 }
@@ -65,7 +65,7 @@ namespace output {
         bool isFirst = true;
 
         for (int i = from; i <= to; i++) {
-            if (process::isPerfectNumber(i)) {
+            if (process::isPerfect(i)) {
                 if (!isFirst) {
                     std::cout << ", ";
                 }
@@ -110,12 +110,12 @@ namespace output {
     /**
      * @brief Prints a descending inverted number pattern.
      *
-     * @param number Start number for the pattern.
+     * @param rows Start number for the pattern.
      */
-    void printInvertedNumberPattern(int number) {
+    void printInvertedNumberPattern(int rows) {
         std::cout << "\n";
 
-        for (int i = number; i >= 1; i--) {
+        for (int i = rows; i >= 1; i--) {
             for (int j = 1; j <= i; j++) {
                 std::cout << i;
             }
@@ -127,12 +127,12 @@ namespace output {
     /**
      * @brief Prints an ascending number pattern.
      *
-     * @param number End number for the pattern.
+     * @param rows End number for the pattern.
      */
-    void printNumberPattern(int number) {
+    void printNumberPattern(int rows) {
         std::cout << "\n";
 
-        for (int i = 1; i <= number; i++) {
+        for (int i = 1; i <= rows; i++) {
             for (int j = 1; j <= i; j++) {
                 std::cout << i;
             }
@@ -144,12 +144,12 @@ namespace output {
     /**
      * @brief Prints a descending inverted letter pattern.
      *
-     * @param number Number of letter rows.
+     * @param rows Number of letter rows.
      */
-    void printInvertedLetterPattern(int number) {
+    void printInvertedLetterPattern(int rows) {
         std::cout << "\n";
 
-        for (int i = number; i >= 1; i--) {
+        for (int i = rows; i >= 1; i--) {
             for (int j = 1; j <= i; j++) {
                 std::cout << char(i + 64);
             }
@@ -161,12 +161,12 @@ namespace output {
     /**
      * @brief Prints an ascending letter pattern.
      *
-     * @param number Number of letter rows.
+     * @param rows Number of letter rows.
      */
-    void printLetterPattern(int number) {
+    void printLetterPattern(int rows) {
         std::cout << "\n";
 
-        for (int i = 1; i <= number; i++) {
+        for (int i = 1; i <= rows; i++) {
             for (int j = 1; j <= i; j++) {
                 std::cout << char(i + 64);
             }

@@ -31,7 +31,7 @@ namespace process {
      * @return true If prime.
      * @return false Otherwise.
      */
-    bool isPrimeNumber(int number) {
+    bool isPrime(int number) {
         if (number <= 1) {
             return false;
         }
@@ -52,7 +52,7 @@ namespace process {
      * @return true If perfect.
      * @return false Otherwise.
      */
-    bool isPerfectNumber(int number) {
+    bool isPerfect(int number) {
         int sum = 0;
 
         for (int i = 1; i < number; i++) {
@@ -131,7 +131,7 @@ namespace process {
      * @return true If palindrome.
      * @return false Otherwise.
      */
-    bool isPalindromeNumber(int number) {
+    bool isPalindrome(int number) {
         return number == reverseNumber(number);
     }
 
@@ -142,7 +142,7 @@ namespace process {
      * @return true If found.
      * @return false Otherwise.
      */
-    bool guess3LetterPassword(const std::string& password) {
+    bool guess3LetterPassword(const std::string &password) {
         std::string word = "AAA";
 
         int counter = 0;
@@ -181,7 +181,7 @@ namespace process {
      * @return std::string Encrypted text.
      */
     std::string encryptTextV1(std::string text, short key) {
-        for (char& character : text) {
+        for (char &character : text) {
             character += key;
         }
 
@@ -196,11 +196,23 @@ namespace process {
      * @return std::string Decrypted text.
      */
     std::string decryptTextV1(std::string text, short key) {
-        for (char& character : text) {
+        for (char &character : text) {
             character -= key;
         }
 
         return text;
+    }
+
+    /**
+     * @brief Swaps the values of two integer numbers.
+     *
+     * @param num1 First number (passed by reference).
+     * @param num2 Second number (passed by reference).
+     */
+    void swapNumbers(int &num1, int &num2) {
+        int temp = num1;
+        num1 = num2;
+        num2 = temp;
     }
 
     /**
@@ -211,6 +223,10 @@ namespace process {
      * @return int Random number between from and to.
      */
     int randomInRange(int from, int to) {
+        if (from > to) {
+            swapNumbers(from, to);
+        }
+
         return rand() % (to - from + 1) + from;
     }
 
@@ -360,6 +376,124 @@ namespace process {
     void fillRandom(int arr[], unsigned int arrSize, int from, int to) {
         for (unsigned int i = 0; i < arrSize; i++) {
             arr[i] = randomInRange(from, to);
+        }
+    }
+
+    /**
+     * @brief Finds the maximum number in an array.
+     *
+     * @param arr Target array.
+     * @param arrSize Number of elements in the array.
+     * @return int The maximum value found.
+     */
+    int maxInArray(const int arr[], unsigned int arrSize) {
+        if (arrSize == 0) return 0;
+        
+        int max = arr[0];
+
+        for (unsigned int i = 1; i < arrSize; i++) {
+            if (arr[i] > max) {
+                max = arr[i];
+            }
+        }
+
+        return max;
+    }
+
+    /**
+     * @brief Finds the minimum number in an array.
+     *
+     * @param arr Target array.
+     * @param arrSize Number of elements in the array.
+     * @return int The minimum value found.
+     */
+    int minInArray(const int arr[], unsigned int arrSize) {
+        if (arrSize == 0) return 0;
+
+        int min = arr[0];
+
+        for (unsigned int i = 1; i < arrSize; i++) {
+            if (arr[i] < min) {
+                min = arr[i];
+            }
+        }
+
+        return min;
+    }
+
+    /**
+     * @brief Calculates the sum of all elements in an array.
+     *
+     * @param arr Target array.
+     * @param arrSize Number of elements in the array.
+     * @return int The total sum of elements.
+     */
+    int sumArray(const int arr[], unsigned int arrSize) {
+        int sum = 0;
+
+        for (unsigned int i = 0; i < arrSize; i++) {
+            sum += arr[i];
+        }
+
+        return sum;
+    }
+
+    /**
+     * @brief Calculates the average of all elements in an array.
+     *
+     * @param arr Target array.
+     * @param arrSize Number of elements in the array.
+     * @return float The total average of elements (with decimals).
+     */
+    float averageArray(const int arr[], unsigned int arrSize) {
+        if (arrSize == 0) return 0;
+
+        return (float)sumArray(arr, arrSize) / arrSize;
+    }
+
+    /**
+     * @brief Copies elements from one array to another.
+     *
+     * @param arr1 Source array to copy from.
+     * @param arrSize Number of elements to copy.
+     * @param arrResult Result array to copy into.
+     */
+    void copyArray(const int arr1[], unsigned int arrSize, int arrResult[]) {
+        for (unsigned int i = 0; i < arrSize; i++) {
+            arrResult[i] = arr1[i];
+        }
+    }
+
+    /**
+     * @brief Copies only prime numbers from source to result.
+     *
+     * @param arr1 Source array to search for prime numbers.
+     * @param arrSize Number of elements in the source array.
+     * @param arrResult Array where prime numbers will be stored.
+     * @param resultSize Reference to store the number of elements actually copied.
+     */
+    void copyOnlyPrime(const int arr1[], unsigned int arrSize, int arrResult[], unsigned int &resultSize) {
+        resultSize = 0;
+
+        for (unsigned int i = 0; i < arrSize; i++) {
+            if (isPrime(arr1[i])) {
+                arrResult[resultSize] = arr1[i];
+                resultSize++;
+            }
+        }
+    }
+
+    /**
+     * @brief Sums elements of two arrays into a third array.
+     *
+     * @param arr1 First source array.
+     * @param arr2 Second source array.
+     * @param arrSize Number of elements to sum.
+     * @param arrSum Array to store the results.
+     */
+    void sumArrays(const int arr1[], const int arr2[], unsigned int arrSize, int arrResult[]) {
+        for (unsigned int i = 0; i < arrSize; i++) {
+            arrResult[i] = arr1[i] + arr2[i];
         }
     }
 
