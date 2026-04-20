@@ -346,18 +346,18 @@ namespace process {
     }
 
     /**
-     * @brief Counts occurrences of a specific number in an array.
+     * @brief Counts occurrences of a specific element in an array.
      *
      * @param arr Target array.
      * @param arrSize Array size.
-     * @param numberToCheck Number to count.
-     * @return int Count of the number occurrences.
+     * @param elementToSearch Element to count.
+     * @return int Count of the element occurrences.
      */
-    int countOccurrences(const int arr[], unsigned int arrSize, int numberToCheck) {
+    int countOccurrences(const int arr[], unsigned int arrSize, int elementToSearch) {
         int occurrencesCount = 0;
 
         for (unsigned int i = 0; i < arrSize; i++) {
-            if (arr[i] == numberToCheck) {
+            if (arr[i] == elementToSearch) {
                 occurrencesCount++;
             }
         }
@@ -388,7 +388,7 @@ namespace process {
      */
     int maxInArray(const int arr[], unsigned int arrSize) {
         if (arrSize == 0) return 0;
-        
+
         int max = arr[0];
 
         for (unsigned int i = 1; i < arrSize; i++) {
@@ -491,10 +491,112 @@ namespace process {
      * @param arrSize Number of elements to sum.
      * @param arrSum Array to store the results.
      */
-    void sumArrays(const int arr1[], const int arr2[], unsigned int arrSize, int arrResult[]) {
+    void sum2Arrays(const int arr1[], const int arr2[], unsigned int arrSize, int arrResult[]) {
         for (unsigned int i = 0; i < arrSize; i++) {
             arrResult[i] = arr1[i] + arr2[i];
         }
+    }
+
+    /**
+     * @brief Fills the array with sorted numbers from 1 to arrSize.
+     *
+     * @param arr Target array.
+     * @param arrSize Number of elements to fill.
+     */
+    void fillSorted(int arr[], unsigned int arrSize) {
+        for (unsigned int i = 0; i < arrSize; i++) {
+            arr[i] = i + 1;
+        }
+    }
+
+    /**
+     * @brief Shuffles the elements of an array randomly.
+     *
+     * @param arr Target array to shuffle.
+     * @param arrSize Number of elements in the array.
+     */
+    void shuffleArray(int arr[], unsigned int arrSize) {
+        for (unsigned int i = 0; i < arrSize; i++) {
+            swapNumbers(arr[randomInRange(0, arrSize - 1)], arr[randomInRange(0, arrSize - 1)]);
+        }
+    }
+
+    /**
+     * @brief Copies elements from one array to another in reverse order.
+     *
+     * @param arr1 Source array.
+     * @param arrSize Number of elements to copy.
+     * @param arrResult Array to store the reversed elements.
+     */
+    void copyInReverse(const int arr1[], unsigned int arrSize, int arrResult[]) {
+        for (unsigned int i = 0, j = arrSize - 1; i < arrSize; i++, j--) {
+            arrResult[i] = arr1[j];
+        }
+    }
+
+    /**
+     * @brief Checks if an array is sorted in ascending order.
+     *
+     * @param arr Target array.
+     * @param arrSize Number of elements in the array.
+     * @return true If the array is sorted in ascending order.
+     * @return false Otherwise.
+     */
+    bool isSorted(const int arr[], unsigned int arrSize) {
+        if (arrSize <= 1) return true;
+
+        for (unsigned int i = 0; i < arrSize - 1; i++) {
+            if (arr[i] > arr[i + 1]) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * @brief Fills a string array with random keys.
+     *
+     * @param arr Target array.
+     * @param arrSize Number of elements.
+     * @param wordsPerKey Words per key.
+     * @param wordLength Characters per word.
+     * @param charType Character set to use.
+     * @param separator Delimiter separating words.
+     */
+    void fillWithRandomKeys(std::string arr[], unsigned int arrSize, int wordsPerKey, int wordLength, enCharType charType, char separator) {
+        for (unsigned int i = 0; i < arrSize; i++) {
+            arr[i] = generateRandomKey(wordsPerKey, wordLength, charType, separator);
+        }
+    }
+
+    /**
+     * @brief Finds the first occurrence index of an element in an array.
+     *
+     * @param arr Target array.
+     * @param arrSize Number of elements.
+     * @param elementToSearch Value to find.
+     * @return short Index (0-based) if found, -1 otherwise.
+     */
+    short findIndexInArray(const int arr[], unsigned int arrSize, int elementToSearch) {
+        for (unsigned int i = 0; i < arrSize; i++) {
+            if (arr[i] == elementToSearch) {
+                return (short)i;
+            }
+        }
+        return -1;
+    }
+
+    /**
+     * @brief Checks if a specific element exists in the array.
+     * 
+     * @param arr Target array.
+     * @param arrSize Number of elements.
+     * @param elementToSearch Value to find.
+     * @return true If the element is found, false otherwise.
+     */
+    bool isElementInArray(const int arr[], unsigned int arrSize, int elementToSearch) {
+        return findIndexInArray(arr, arrSize, elementToSearch) != -1;
     }
 
 }  // namespace process

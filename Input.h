@@ -5,6 +5,21 @@
 namespace input {
 
     /**
+     * @brief Reads an integer from the user.
+     * 
+     * @param message Prompt displayed to the user.
+     * @return int The inputted integer.
+     */
+    int readInt(const std::string& message) {
+        int number;
+
+        std::cout << message;
+        std::cin >> number;
+
+        return number;
+    }
+
+    /**
      * @brief Reads a positive integer from the user.
      * 
      * @param message Prompt displayed to the user.

@@ -224,15 +224,41 @@ namespace output {
     }
 
     /**
-     * @brief Prints the occurrences count of a number within an array.
+     * @brief Prints the occurrences count of an element within an array.
      *
      * @param arr Target array.
      * @param arrSize Array size.
-     * @param numberToCheck Number to count.
+     * @param elementToSearch Element to count.
      */
-    void printOccurrences(const int arr[], unsigned int arrSize, int numberToCheck) {
+    void printOccurrences(const int arr[], unsigned int arrSize, int elementToSearch) {
         std::cout << "\n"
-                  << numberToCheck << " is repeated " << process::countOccurrences(arr, arrSize, numberToCheck) << " time(s)";
+                  << elementToSearch << " is repeated " << process::countOccurrences(arr, arrSize, elementToSearch) << " time(s)";
+    }
+
+    /**
+     * @brief Prints a string array with indices.
+     *
+     * @param arr Target array.
+     * @param arrSize Array size.
+     */
+    void printStringArray(const std::string arr[], unsigned int arrSize) {
+        for (unsigned int i = 0; i < arrSize; i++) {
+            std::cout << "Array[" << i << "] : " << arr[i] << "\n";
+        }
+    }
+
+    /**
+     * @brief Prints the result of a search operation.
+     *
+     * @param index The found index or -1 if not found.
+     */
+    void printSearchResult(short index) {
+        if (index == -1) {
+            std::cout << "The item was not found :-(\n";
+        } else {
+            std::cout << "The item was found at position: " << index << "\n";
+            std::cout << "The item was found at its order  : " << index + 1 << "\n";
+        }
     }
 
 }  // namespace output
