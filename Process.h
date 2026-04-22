@@ -1,8 +1,21 @@
 #pragma once
-#include <iostream>
+#include <algorithm>
+#include <random>
 #include <string>
+#include <string_view>
 
 namespace process {
+
+    /**
+     * @brief Helper function to get the global random engine.
+     *
+     * @return std::mt19937& Reference to the static Mersenne Twister engine.
+     */
+    inline std::mt19937 &getRandomEngine() {
+        static std::random_device rd;
+        static std::mt19937 engine(rd());
+        return engine;
+    }
 
     /**
      * @brief Helper to format column spacing for multiplication tables.
@@ -87,41 +100,20 @@ namespace process {
      * @brief Reverses the digits of a number.
      *
      * @param number Target number.
-     * @return int Reversed number.
+     * @return T Reversed number.
      */
-    int reverseNumber(int number) {
-        int reversedNumber = 0;
+    template <typename T>
+    T reverseNumber(T number) {
+        T reversedNumber = 0;
 
         while (number > 0) {
-            int remainder = number % 10;
+            T remainder = number % 10;
             number /= 10;
 
             reversedNumber = reversedNumber * 10 + remainder;
         }
 
         return reversedNumber;
-    }
-
-    /**
-     * @brief Counts occurrences of a specific digit in a number.
-     *
-     * @param number Target number to search.
-     * @param digitToCheck Digit to find.
-     * @return int Count of the digit occurrences.
-     */
-    int countDigitOccurrences(int number, short digitToCheck) {
-        int occurrencesCount = 0;
-
-        while (number > 0) {
-            int remainder = number % 10;
-            number /= 10;
-
-            if (remainder == digitToCheck) {
-                occurrencesCount++;
-            }
-        }
-
-        return occurrencesCount;
     }
 
     /**
@@ -136,16 +128,37 @@ namespace process {
     }
 
     /**
+     * @brief Counts occurrences of a specific digit in a number.
+     *
+     * @param number Target number to search.
+     * @param digitToCheck Digit to find.
+     * @return int Count of the digit occurrences.
+     */
+    template <typename T>
+    int countDigitOccurrences(T number, T digitToCheck) {
+        int occurrencesCount = 0;
+
+        while (number > 0) {
+            T remainder = number % 10;
+            number /= 10;
+
+            if (remainder == digitToCheck) {
+                occurrencesCount++;
+            }
+        }
+
+        return occurrencesCount;
+    }
+
+    /**
      * @brief Attempts to guess a 3-letter password by brute force.
      *
      * @param password Password to guess.
      * @return true If found.
      * @return false Otherwise.
      */
-    bool guess3LetterPassword(const std::string &password) {
+    bool guess3LetterPassword(std::string_view password) {
         std::string word = "AAA";
-
-        int counter = 0;
 
         for (int i = 0; i < 26; i++) {
             word[0] = 'A' + i;
@@ -156,14 +169,7 @@ namespace process {
                 for (int k = 0; k < 26; k++) {
                     word[2] = 'A' + k;
 
-                    counter++;
-
-                    std::cout << "Trial [" << counter << "] : " << word << "\n";
-
                     if (word == password) {
-                        std::cout << "Password is: " << password << "\n";
-                        std::cout << "Found after " << counter << " Trial(s)";
-
                         return true;
                     }
                 }
@@ -180,12 +186,14 @@ namespace process {
      * @param key Shift value.
      * @return std::string Encrypted text.
      */
-    std::string encryptTextV1(std::string text, short key) {
-        for (char &character : text) {
+    std::string encryptTextV1(std::string_view text, short key) {
+        std::string result(text);
+
+        for (char &character : result) {
             character += key;
         }
 
-        return text;
+        return result;
     }
 
     /**
@@ -195,24 +203,27 @@ namespace process {
      * @param key Shift value used for encryption.
      * @return std::string Decrypted text.
      */
-    std::string decryptTextV1(std::string text, short key) {
-        for (char &character : text) {
+    std::string decryptTextV1(std::string_view text, short key) {
+        std::string result(text);
+
+        for (char &character : result) {
             character -= key;
         }
 
-        return text;
+        return result;
     }
 
     /**
-     * @brief Swaps the values of two integer numbers.
+     * @brief Swaps the values of two values.
      *
-     * @param num1 First number (passed by reference).
-     * @param num2 Second number (passed by reference).
+     * @param value1 First value (passed by reference).
+     * @param value2 Second value (passed by reference).
      */
-    void swapNumbers(int &num1, int &num2) {
-        int temp = num1;
-        num1 = num2;
-        num2 = temp;
+    template <typename T>
+    void swapValue(T &value1, T &value2) {
+        T temp = value1;
+        value1 = value2;
+        value2 = temp;
     }
 
     /**
@@ -220,14 +231,16 @@ namespace process {
      *
      * @param from Minimum value.
      * @param to Maximum value.
-     * @return int Random number between from and to.
+     * @return T Random number between from and to.
      */
-    int randomInRange(int from, int to) {
+    template <typename T>
+    T randomInRange(T from, T to) {
         if (from > to) {
-            swapNumbers(from, to);
+            swapValue(from, to);
         }
 
-        return rand() % (to - from + 1) + from;
+        std::uniform_int_distribution<long long> dist(from, to);
+        return (T)dist(getRandomEngine());
     }
 
     /**
@@ -351,10 +364,11 @@ namespace process {
      * @param arr Target array.
      * @param arrSize Array size.
      * @param elementToSearch Element to count.
-     * @return int Count of the element occurrences.
+     * @return unsigned int Count of the element occurrences.
      */
-    int countOccurrences(const int arr[], unsigned int arrSize, int elementToSearch) {
-        int occurrencesCount = 0;
+    template <typename T>
+    unsigned int countOccurrences(const T arr[], unsigned int arrSize, T elementToSearch) {
+        unsigned int occurrencesCount = 0;
 
         for (unsigned int i = 0; i < arrSize; i++) {
             if (arr[i] == elementToSearch) {
@@ -373,9 +387,10 @@ namespace process {
      * @param from Minimum random value.
      * @param to Maximum random value.
      */
-    void fillRandom(int arr[], unsigned int arrSize, int from, int to) {
+    template <typename T>
+    void fillRandom(T arr[], unsigned int arrSize, T from, T to) {
         for (unsigned int i = 0; i < arrSize; i++) {
-            arr[i] = randomInRange(from, to);
+            arr[i] = (T)randomInRange(from, to);
         }
     }
 
@@ -386,10 +401,11 @@ namespace process {
      * @param arrSize Number of elements in the array.
      * @return int The maximum value found.
      */
-    int maxInArray(const int arr[], unsigned int arrSize) {
-        if (arrSize == 0) return 0;
+    template <typename T>
+    T maxInArray(const T arr[], unsigned int arrSize) {
+        if (arrSize == 0) return T();
 
-        int max = arr[0];
+        T max = arr[0];
 
         for (unsigned int i = 1; i < arrSize; i++) {
             if (arr[i] > max) {
@@ -405,12 +421,13 @@ namespace process {
      *
      * @param arr Target array.
      * @param arrSize Number of elements in the array.
-     * @return int The minimum value found.
+     * @return T The minimum value found.
      */
-    int minInArray(const int arr[], unsigned int arrSize) {
-        if (arrSize == 0) return 0;
+    template <typename T>
+    T minInArray(const T arr[], unsigned int arrSize) {
+        if (arrSize == 0) return T();
 
-        int min = arr[0];
+        T min = arr[0];
 
         for (unsigned int i = 1; i < arrSize; i++) {
             if (arr[i] < min) {
@@ -426,10 +443,11 @@ namespace process {
      *
      * @param arr Target array.
      * @param arrSize Number of elements in the array.
-     * @return int The total sum of elements.
+     * @return T The total sum of elements.
      */
-    int sumArray(const int arr[], unsigned int arrSize) {
-        int sum = 0;
+    template <typename T>
+    T sumArray(const T arr[], unsigned int arrSize) {
+        T sum = 0;
 
         for (unsigned int i = 0; i < arrSize; i++) {
             sum += arr[i];
@@ -445,7 +463,8 @@ namespace process {
      * @param arrSize Number of elements in the array.
      * @return float The total average of elements (with decimals).
      */
-    float averageArray(const int arr[], unsigned int arrSize) {
+    template <typename T>
+    float averageArray(const T arr[], unsigned int arrSize) {
         if (arrSize == 0) return 0;
 
         return (float)sumArray(arr, arrSize) / arrSize;
@@ -454,31 +473,33 @@ namespace process {
     /**
      * @brief Copies elements from one array to another.
      *
-     * @param arr1 Source array to copy from.
-     * @param arrSize Number of elements to copy.
-     * @param arrResult Result array to copy into.
+     * @param arrSource Source array to copy from.
+     * @param sourceSize Number of elements to copy.
+     * @param arrDestination Result array to copy into.
      */
-    void copyArray(const int arr1[], unsigned int arrSize, int arrResult[]) {
-        for (unsigned int i = 0; i < arrSize; i++) {
-            arrResult[i] = arr1[i];
+    template <typename T>
+    void copyArray(const T arrSource[], unsigned int sourceSize, T arrDestination[]) {
+        for (unsigned int i = 0; i < sourceSize; i++) {
+            arrDestination[i] = arrSource[i];
         }
     }
 
     /**
      * @brief Copies only prime numbers from source to result.
      *
-     * @param arr1 Source array to search for prime numbers.
-     * @param arrSize Number of elements in the source array.
-     * @param arrResult Array where prime numbers will be stored.
-     * @param resultSize Reference to store the number of elements actually copied.
+     * @param arrSource Source array to search for prime numbers.
+     * @param sourceSize Number of elements in the source array.
+     * @param arrDestination Array where prime numbers will be stored.
+     * @param destSize Reference to store the number of elements actually copied.
      */
-    void copyOnlyPrime(const int arr1[], unsigned int arrSize, int arrResult[], unsigned int &resultSize) {
-        resultSize = 0;
+    template <typename T>
+    void copyOnlyPrime(const T arrSource[], unsigned int sourceSize, T arrDestination[], unsigned int &destSize) {
+        destSize = 0;
 
-        for (unsigned int i = 0; i < arrSize; i++) {
-            if (isPrime(arr1[i])) {
-                arrResult[resultSize] = arr1[i];
-                resultSize++;
+        for (unsigned int i = 0; i < sourceSize; i++) {
+            if (isPrime((int)arrSource[i])) {
+                arrDestination[destSize] = arrSource[i];
+                destSize++;
             }
         }
     }
@@ -486,14 +507,15 @@ namespace process {
     /**
      * @brief Sums elements of two arrays into a third array.
      *
-     * @param arr1 First source array.
-     * @param arr2 Second source array.
+     * @param arrSource1 First source array.
+     * @param arrSource2 Second source array.
      * @param arrSize Number of elements to sum.
-     * @param arrSum Array to store the results.
+     * @param arrDestination Array to store the results.
      */
-    void sum2Arrays(const int arr1[], const int arr2[], unsigned int arrSize, int arrResult[]) {
+    template <typename T>
+    void sum2Arrays(const T arrSource1[], const T arrSource2[], unsigned int arrSize, T arrDestination[]) {
         for (unsigned int i = 0; i < arrSize; i++) {
-            arrResult[i] = arr1[i] + arr2[i];
+            arrDestination[i] = arrSource1[i] + arrSource2[i];
         }
     }
 
@@ -503,9 +525,10 @@ namespace process {
      * @param arr Target array.
      * @param arrSize Number of elements to fill.
      */
-    void fillSorted(int arr[], unsigned int arrSize) {
+    template <typename T>
+    void fillSorted(T arr[], unsigned int arrSize) {
         for (unsigned int i = 0; i < arrSize; i++) {
-            arr[i] = i + 1;
+            arr[i] = (T)(i + 1);
         }
     }
 
@@ -515,22 +538,22 @@ namespace process {
      * @param arr Target array to shuffle.
      * @param arrSize Number of elements in the array.
      */
-    void shuffleArray(int arr[], unsigned int arrSize) {
-        for (unsigned int i = 0; i < arrSize; i++) {
-            swapNumbers(arr[randomInRange(0, arrSize - 1)], arr[randomInRange(0, arrSize - 1)]);
-        }
+    template <typename T>
+    void shuffleArray(T arr[], unsigned int arrSize) {
+        std::shuffle(arr, arr + arrSize, getRandomEngine());
     }
 
     /**
      * @brief Copies elements from one array to another in reverse order.
      *
-     * @param arr1 Source array.
-     * @param arrSize Number of elements to copy.
-     * @param arrResult Array to store the reversed elements.
+     * @param arrSource Source array.
+     * @param sourceSize Number of elements to copy.
+     * @param arrDestination Array to store the reversed elements.
      */
-    void copyInReverse(const int arr1[], unsigned int arrSize, int arrResult[]) {
-        for (unsigned int i = 0, j = arrSize - 1; i < arrSize; i++, j--) {
-            arrResult[i] = arr1[j];
+    template <typename T>
+    void copyInReverse(const T arrSource[], unsigned int sourceSize, T arrDestination[]) {
+        for (unsigned int i = 0, j = sourceSize - 1; i < sourceSize; i++, j--) {
+            arrDestination[i] = arrSource[j];
         }
     }
 
@@ -542,7 +565,8 @@ namespace process {
      * @return true If the array is sorted in ascending order.
      * @return false Otherwise.
      */
-    bool isSorted(const int arr[], unsigned int arrSize) {
+    template <typename T>
+    bool isSorted(const T arr[], unsigned int arrSize) {
         if (arrSize <= 1) return true;
 
         for (unsigned int i = 0; i < arrSize - 1; i++) {
@@ -578,10 +602,103 @@ namespace process {
      * @param elementToSearch Value to find.
      * @return short Index (0-based) if found, -1 otherwise.
      */
-    short findIndexInArray(const int arr[], unsigned int arrSize, int elementToSearch) {
+    /**
+     * @brief Generates a descending inverted number pattern string.
+     *
+     * @param rows Start number for the pattern.
+     * @return std::string The formatted pattern.
+     */
+    std::string generateInvertedNumberPattern(int rows) {
+        std::string pattern = "";
+        // Formula: (rows * (rows + 1) / 2) for total digits + 'rows' for newline characters
+        pattern.reserve((rows * (rows + 1) / 2) + rows);
+
+        for (int i = rows; i >= 1; i--) {
+            std::string strI = std::to_string(i);
+            for (int j = 1; j <= i; j++) {
+                pattern.append(strI);
+            }
+            pattern.push_back('\n');
+        }
+        return pattern;
+    }
+
+    /**
+     * @brief Generates an ascending number pattern string.
+     *
+     * @param rows End number for the pattern.
+     * @return std::string The formatted pattern.
+     */
+    std::string generateNumberPattern(int rows) {
+        std::string pattern = "";
+        // Formula: (rows * (rows + 1) / 2) for total digits + 'rows' for newline characters
+        pattern.reserve((rows * (rows + 1) / 2) + rows);
+
+        for (int i = 1; i <= rows; i++) {
+            std::string strI = std::to_string(i);
+            for (int j = 1; j <= i; j++) {
+                pattern.append(strI);
+            }
+            pattern.push_back('\n');
+        }
+        return pattern;
+    }
+
+    /**
+     * @brief Generates a descending inverted letter pattern string.
+     *
+     * @param rows Number of letter rows.
+     * @return std::string The formatted pattern.
+     */
+    std::string generateInvertedLetterPattern(int rows) {
+        std::string pattern = "";
+        // Formula: (rows * (rows + 1) / 2) for total letters + 'rows' for newline characters
+        pattern.reserve((rows * (rows + 1) / 2) + rows);
+
+        for (int i = rows; i >= 1; i--) {
+            char ch = char(i + 64);
+            for (int j = 1; j <= i; j++) {
+                pattern.push_back(ch);
+            }
+            pattern.push_back('\n');
+        }
+        return pattern;
+    }
+
+    /**
+     * @brief Generates an ascending letter pattern string.
+     *
+     * @param rows Number of letter rows.
+     * @return std::string The formatted pattern.
+     */
+    std::string generateLetterPattern(int rows) {
+        std::string pattern = "";
+        // Formula: (rows * (rows + 1) / 2) for total letters + 'rows' for newline characters
+        pattern.reserve((rows * (rows + 1) / 2) + rows);
+
+        for (int i = 1; i <= rows; i++) {
+            char ch = char(i + 64);
+            for (int j = 1; j <= i; j++) {
+                pattern.push_back(ch);
+            }
+            pattern.push_back('\n');
+        }
+        return pattern;
+    }
+
+    /**
+     * @brief Finds the first occurrence index of an element in an array.
+     *
+     * @param arr Target array.
+     * @param arrSize Number of elements.
+     * @param elementToSearch Value to find.
+     * @return int Index (0-based) if found, -1 otherwise.
+     */
+    template <typename T>
+    int findIndexInArray(const T arr[], unsigned int arrSize, T elementToSearch) {
         for (unsigned int i = 0; i < arrSize; i++) {
             if (arr[i] == elementToSearch) {
-                return (short)i;
+                return (int)i;
             }
         }
         return -1;
@@ -589,14 +706,100 @@ namespace process {
 
     /**
      * @brief Checks if a specific element exists in the array.
-     * 
+     *
      * @param arr Target array.
      * @param arrSize Number of elements.
      * @param elementToSearch Value to find.
      * @return true If the element is found, false otherwise.
      */
-    bool isElementInArray(const int arr[], unsigned int arrSize, int elementToSearch) {
+    template <typename T>
+    bool isElementInArray(const T arr[], unsigned int arrSize, T elementToSearch) {
         return findIndexInArray(arr, arrSize, elementToSearch) != -1;
+    }
+
+    /**
+     * @brief Adds a new element to the array and increments the size.
+     *
+     * @param arr The target array.
+     * @param arrSize Reference to the current number of elements.
+     * @param element The value to add.
+     */
+    template <typename T>
+    void addArrayElement(T arr[], unsigned int &arrSize, T element) {
+        arr[arrSize] = element;
+        arrSize++;
+    }
+
+    /**
+     * @brief Copies an array into another using addArrayElement logic.
+     *
+     * @param arrSource Source array.
+     * @param sourceSize Number of elements to copy.
+     * @param arrDestination Destination array.
+     * @param destSize Reference to the destination array's current length.
+     */
+    template <typename T>
+    void copyArrayUsingAddElement(const T arrSource[], unsigned int sourceSize, T arrDestination[], unsigned int &destSize) {
+        for (unsigned int i = 0; i < sourceSize; i++) {
+            addArrayElement(arrDestination, destSize, arrSource[i]);
+        }
+    }
+
+    /**
+     * @brief Copies only odd elements to the result array.
+     *
+     * @param arrSource Source array.
+     * @param sourceSize Number of elements in source.
+     * @param arrDestination Destination array.
+     * @param destSize Reference to store result count.
+     */
+    template <typename T>
+    void copyOddNumbers(const T arrSource[], unsigned int sourceSize, T arrDestination[], unsigned int &destSize) {
+        destSize = 0;
+
+        for (unsigned int i = 0; i < sourceSize; i++) {
+            if (arrSource[i] % 2 != 0) {
+                addArrayElement(arrDestination, destSize, arrSource[i]);
+            }
+        }
+    }
+
+    /**
+     * @brief Copies only prime numbers to the result array.
+     *
+     * @param arrSource Source array.
+     * @param sourceSize Number of elements in source.
+     * @param arrDestination Destination array.
+     * @param destSize Reference to store count of prime numbers.
+     */
+    template <typename T>
+    void copyPrimeNumbers(const T arrSource[], unsigned int sourceSize, T arrDestination[], unsigned int &destSize) {
+        destSize = 0;
+
+        for (unsigned int i = 0; i < sourceSize; i++) {
+            if (isPrime(arrSource[i])) {
+                addArrayElement(arrDestination, destSize, arrSource[i]);
+            }
+        }
+    }
+
+    /**
+     * @brief Copies only distinct elements to the result array.
+     *
+     * @param arrSource Source array.
+     * @param sourceSize Number of elements in source.
+     * @param arrDestination Destination array.
+     * @param destSize Reference to store count of distinct elements.
+     */
+    template <typename T>
+    void copyDistinctElements(const T arrSource[], unsigned int sourceSize, T arrDestination[], unsigned int &destSize) {
+        destSize = 0;
+
+        for (unsigned int i = 0; i < sourceSize; i++) {
+            if (countOccurrences(arrDestination, destSize, arrSource[i]) == 0) {
+                addArrayElement(arrDestination, destSize, arrSource[i]);
+            }
+        }
     }
 
 }  // namespace process

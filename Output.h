@@ -1,6 +1,8 @@
 #pragma once
+
 #include <iostream>
 #include <string>
+#include <string_view>
 
 #include "process.h"
 
@@ -8,13 +10,13 @@ namespace output {
     /**
      * @brief Prints the 1-10 multiplication table.
      */
-    void printMultiplicationTable() {
+    void printMultiplicationTable(std::string_view title = "\n\t\t\t\tMultiplication Table From 1 to 10\n\n", std::string_view separator = "\n____________________________________________________________________________________\n") {
         // Multiplication Header
-        std::cout << "\n\t\t\t\tMultiplication Table From 1 to 10\n\n";
+        std::cout << title;
         for (int i = 1; i <= 10; i++) {
             std::cout << "\t" << i;
         }
-        std::cout << "\n____________________________________________________________________________________\n";
+        std::cout << separator;
 
         // Multiplication Main
         for (int i = 1; i <= 10; i++) {
@@ -33,8 +35,8 @@ namespace output {
      * @param from Start of the range.
      * @param to End of the range.
      */
-    void printPrimeNumbersInRange(int from, int to) {
-        std::cout << "Prime numbers from " << from << " to " << to << " are [";
+    void printPrimeNumbersInRange(std::string_view message, int from, int to) {
+        std::cout << message;
 
         bool isFirst = true;
 
@@ -59,8 +61,8 @@ namespace output {
      * @param from Start of the range.
      * @param to End of the range.
      */
-    void printPerfectNumbersInRange(int from, int to) {
-        std::cout << "Perfect numbers from " << from << " to " << to << " are [";
+    void printPerfectNumbersInRange(std::string_view message, int from, int to) {
+        std::cout << message;
 
         bool isFirst = true;
 
@@ -84,13 +86,9 @@ namespace output {
      *
      * @param number Target number.
      */
-    void printDigitsReversed(int number) {
-        while (number > 0) {
-            int remainder = number % 10;
-            number /= 10;
-
-            std::cout << remainder << std::endl;
-        }
+    template <typename T>
+    void printDigitsReversed(T number) {
+        std::cout << process::reverseNumber(number);
     }
 
     /**
@@ -98,11 +96,12 @@ namespace output {
      *
      * @param number Target number.
      */
-    void printDigitOccurrences(int number) {
+    template <typename T>
+    void printDigitOccurrences(T number, std::string_view label = "Digit ", std::string_view resultText = " Occurrences is ", std::string_view unitText = " Time(s).\n") {
         for (int i = 0; i < 10; i++) {
-            short occurrencesCount = process::countDigitOccurrences(number, i);
+            int occurrencesCount = process::countDigitOccurrences(number, (T)i);
             if (occurrencesCount > 0) {
-                std::cout << "Digit " << i << " Occurrences is " << occurrencesCount << " Time(s).\n";
+                std::cout << label << i << resultText << occurrencesCount << unitText;
             }
         }
     }
@@ -113,15 +112,7 @@ namespace output {
      * @param rows Start number for the pattern.
      */
     void printInvertedNumberPattern(int rows) {
-        std::cout << "\n";
-
-        for (int i = rows; i >= 1; i--) {
-            for (int j = 1; j <= i; j++) {
-                std::cout << i;
-            }
-
-            std::cout << "\n";
-        }
+        std::cout << process::generateInvertedNumberPattern(rows);
     }
 
     /**
@@ -130,15 +121,7 @@ namespace output {
      * @param rows End number for the pattern.
      */
     void printNumberPattern(int rows) {
-        std::cout << "\n";
-
-        for (int i = 1; i <= rows; i++) {
-            for (int j = 1; j <= i; j++) {
-                std::cout << i;
-            }
-
-            std::cout << "\n";
-        }
+        std::cout << process::generateNumberPattern(rows);
     }
 
     /**
@@ -147,15 +130,7 @@ namespace output {
      * @param rows Number of letter rows.
      */
     void printInvertedLetterPattern(int rows) {
-        std::cout << "\n";
-
-        for (int i = rows; i >= 1; i--) {
-            for (int j = 1; j <= i; j++) {
-                std::cout << char(i + 64);
-            }
-
-            std::cout << "\n";
-        }
+        std::cout << process::generateInvertedLetterPattern(rows);
     }
 
     /**
@@ -164,15 +139,7 @@ namespace output {
      * @param rows Number of letter rows.
      */
     void printLetterPattern(int rows) {
-        std::cout << "\n";
-
-        for (int i = 1; i <= rows; i++) {
-            for (int j = 1; j <= i; j++) {
-                std::cout << char(i + 64);
-            }
-
-            std::cout << "\n";
-        }
+        std::cout <<process::generateLetterPattern(rows);
     }
 
     /**
@@ -205,22 +172,28 @@ namespace output {
      * @param charType Character set to use.
      * @param separator Delimiter between words.
      */
-    void printRandomKeys(int numberOfKeys, int wordsPerKey, int wordLength, process::enCharType charType, char separator) {
+    void printRandomKeys(int numberOfKeys, int wordsPerKey, int wordLength, process::enCharType charType, char separator, std::string_view keyPrefix = "Key [", std::string_view keySeparator = "] : ") {
         for (int i = 1; i <= numberOfKeys; i++) {
-            std::cout << "Key [" << i << "] : " << process::generateRandomKey(wordsPerKey, wordLength, charType, separator) << "\n";
+            std::cout << keyPrefix << i << keySeparator << process::generateRandomKey(wordsPerKey, wordLength, charType, separator) << "\n";
         }
     }
 
     /**
-     * @brief Prints all elements in an array.
+     * @brief Prints all elements in an array with a custom header.
      *
+     * @param header Text to display before elements.
      * @param arr Target array.
      * @param arrSize Array size.
      */
-    void printArray(const int arr[], unsigned int arrSize) {
+    template <typename T>
+    void printArray(std::string_view header, const T arr[], unsigned int arrSize) {
+        std::cout << header;
+
         for (unsigned int i = 0; i < arrSize; i++) {
             std::cout << arr[i] << " ";
         }
+
+        std::cout << "\n";
     }
 
     /**
@@ -229,10 +202,11 @@ namespace output {
      * @param arr Target array.
      * @param arrSize Array size.
      * @param elementToSearch Element to count.
+     * @param message Text formatting prefix.
      */
-    void printOccurrences(const int arr[], unsigned int arrSize, int elementToSearch) {
-        std::cout << "\n"
-                  << elementToSearch << " is repeated " << process::countOccurrences(arr, arrSize, elementToSearch) << " time(s)";
+    template <typename T>
+    void printOccurrences(const T arr[], unsigned int arrSize, T elementToSearch, std::string_view message = "", std::string_view suffix = " time(s)\n") {
+        std::cout << message << process::countOccurrences(arr, arrSize, elementToSearch) << suffix;
     }
 
     /**
@@ -240,10 +214,12 @@ namespace output {
      *
      * @param arr Target array.
      * @param arrSize Array size.
+     * @param message Header message.
      */
-    void printStringArray(const std::string arr[], unsigned int arrSize) {
+    void printStringArray(const std::string arr[], unsigned int arrSize, std::string_view message = "", std::string_view indexPrefix = "Array[", std::string_view indexSuffix = "] : ") {
+        std::cout << message;
         for (unsigned int i = 0; i < arrSize; i++) {
-            std::cout << "Array[" << i << "] : " << arr[i] << "\n";
+            std::cout << indexPrefix << i << indexSuffix << arr[i] << "\n";
         }
     }
 
@@ -251,13 +227,14 @@ namespace output {
      * @brief Prints the result of a search operation.
      *
      * @param index The found index or -1 if not found.
+     * @param foundMsg Descriptive text for successful search.
+     * @param notFoundMsg Text for failed search.
      */
-    void printSearchResult(short index) {
+    void printSearchResult(int index, std::string_view foundMsg = "Found at index: ", std::string_view notFoundMsg = "Not found.") {
         if (index == -1) {
-            std::cout << "The item was not found :-(\n";
+            std::cout << notFoundMsg << "\n";
         } else {
-            std::cout << "The item was found at position: " << index << "\n";
-            std::cout << "The item was found at its order  : " << index + 1 << "\n";
+            std::cout << foundMsg << index << "\n";
         }
     }
 
